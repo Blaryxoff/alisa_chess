@@ -18,15 +18,6 @@ class SpecialIntentHandler(BaseHandler):
     def handle(self):
         # Проверяем специальные намерения, которые не зависят от состояния игры
         logger.info(f"SpecialIntentHandler. handle. Проверяем запрос: {self.request}")
-        if self.intent_validator.validate_help():
-            logger.info(f"SpecialIntentHandler. validate_help. Запрос: {self.request}")
-            state_text = texts.state_texts.get(self.game.get_skill_state(), '')
-            return self.say(texts.help_text + '\n' + state_text)
-
-        if self.intent_validator.validate_whatcanyoudo():
-            logger.info(f"SpecialIntentHandler. validate_whatcanyoudo. Запрос: {self.request}")
-            return self.say(texts.what_can_you_do_text)
-
         if self.intent_validator.validate_new_session():
             # Если пользователь начал новую сессию, то проверяем, не ждём ли мы хода с предыдущей сессии
             logger.info(f"SpecialIntentHandler.validate_new_session. Запрос: {self.request}")
@@ -43,15 +34,21 @@ class SpecialIntentHandler(BaseHandler):
                     text_tts = texts.resume_text + '\n' + 'Показала доску на экране. sil <[60]>'+ '\nВаш ход!'
                 return self.say(text, tts=text_tts)
             else:
-                current_state = self.game.get_skill_state()
-                if current_state in ['INITIATED', '']:
-                    self.game.set_skill_state('WAITING_CONFIRM')
                 state_text = texts.state_texts.get(self.game.get_skill_state(), '')
                 if not state_text:
                     state_text = texts.hi_text
                 if self.game.get_skill_state() == 'WAITING_SKILL_LEVEL':
                     state_text = state_text.format(self.game.get_skill_level())
                 return self.say(state_text)
+        
+        if self.intent_validator.validate_help():
+            logger.info(f"SpecialIntentHandler. validate_help. Запрос: {self.request}")
+            state_text = texts.state_texts.get(self.game.get_skill_state(), '')
+            return self.say(texts.help_text + '\n' + state_text)
+        
+        if self.intent_validator.validate_whatcanyoudo():
+            logger.info(f"SpecialIntentHandler. validate_whatcanyoudo. Запрос: {self.request}")
+            return self.say(texts.what_can_you_do_text)
         
         if self.intent_validator.validate_new_game():
             logger.info(f"SpecialIntentHandler. validate_new_game. Запрос: {self.request}")
