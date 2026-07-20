@@ -29,7 +29,14 @@ class IntentValidator(BaseValidator):
         """Проверяет, является ли запрос просьбой о том, что умеет делать."""
         if self._has_intent('YANDEX.WHAT_CAN_YOU_DO') or self._has_intent('WHAT_CAN_YOU_DO'):
             return True
-        return False
+        what_can_you_do_phrases = [
+            'что ты умеешь',
+            'что умеешь',
+            'что ты можешь',
+            'что ты можешь делать',
+            'расскажи что ты умеешь',
+        ]
+        return self._has_text(what_can_you_do_phrases)
 
     def validate_draw(self) -> bool:
         """Проверяет, является ли запрос предложением ничьей."""
@@ -109,4 +116,4 @@ class IntentValidator(BaseValidator):
             self.validate_get_skill_level(),
             self.validate_show_board(),
             self.validate_repeat()
-        ]) 
+        ])
