@@ -2,10 +2,15 @@ name: Auto Deploy to TESTING YaCloud Functions
 
 on:
   push:
-    branches: [ master, main ]
+    branches: [ master ]
   pull_request:
-    branches: [ master, main ]
+    branches: [ master ]
 
+
+concurrency:
+  group: workflow-chess-deploy-test
+  cancel-in-progress: false
+  queue: single
 
 jobs:
   deploy:

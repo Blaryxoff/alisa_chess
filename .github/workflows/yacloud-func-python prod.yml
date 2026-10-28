@@ -4,6 +4,11 @@ on:
   workflow_dispatch:
 
 
+concurrency:
+  group: workflow-chess-deploy-prod
+  cancel-in-progress: false
+  queue: single
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
